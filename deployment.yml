@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jb-hello-world-deployment
+  labels:
+    app: jb-hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jb-hello-world
+  template:
+    metadata:
+      labels:
+        app: jb-hello-world
+    spec:
+      containers:
+      - name: jb-hello-world-container
+        image: arjundevops92/test-repo:v1  # Your Docker image
+        ports:
+        - containerPort: 8080  # Port the container listens on
+        imagePullPolicy: IfNotPresent
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jb-hello-world-service
+spec:
+  selector:
+    app: jb-hello-world  # Matches the label of the pod
+  ports:
+    - protocol: TCP
+      port: 80          # Expose this port on the load balancer
+      targetPort: 8080  # Port the application listens on inside the container
+  type: LoadBalancer    # Creates an external load balancer
